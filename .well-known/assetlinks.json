@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.anhdaipro.chemcalcpro",
+      "sha256_cert_fingerprints": [
+        "C9:D9:CB:C7:15:25:A4:FF:8D:59:AA:6F:35:82:A1:45:2D:E8:69:87:0D:4B:32:C8:FF:B4:7E:FC:6E:D6:BE:25"
+      ]
+    }
+  }
+]

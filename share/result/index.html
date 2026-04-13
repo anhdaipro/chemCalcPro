@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChemCalc Pro - Shared Result</title>
+
+    <!-- Open Graph for social snippets (Facebook, Zalo, etc.) -->
+    <meta property="og:title" content="ChemCalc Pro - Kết quả giải toán">
+    <meta property="og:description" content="Xem kết quả và các bước giải chi tiết trên ứng dụng ChemCalc Pro.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://chem-calc-pro.vercel.app/icon.png">
+
+    <!-- Facebook App Links -->
+    <meta property="al:android:url" content="chemcalcpro://share/result/">
+    <meta property="al:android:package" content="com.anhdaipro.chemcalcpro">
+    <meta property="al:android:app_name" content="ChemCalcPro">
+    <meta property="al:ios:url" content="chemcalcpro://share/result/">
+    <meta property="al:ios:app_store_id" content="6477202390">
+    <meta property="al:ios:app_name" content="ChemCalcPro">
+    <meta property="al:web:should_fallback" content="false">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
+        .container { padding: 20px; }
+        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #06B6D4; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn { display: inline-block; padding: 12px 24px; background: #06B6D4; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <p>Opening ChemCalc Pro...</p>
+        <a href="#" id="manual-btn" class="btn" style="display: none;">Open App Manually</a>
+    </div>
+
+    <script>
+        const DEEP_LINK_SCHEME = 'chemcalcpro://share/result';
+        const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.anhdaipro.chemcalcpro';
+        const APP_STORE_URL = 'https://apps.apple.com/app/id6477202390';
+
+        function getMobileOS() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            if (/android/i.test(ua)) return "android";
+            if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return "ios";
+            return "unknown";
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const resultId = urlParams.get('id');
+
+        if (resultId) {
+            const jumpUrl = `${DEEP_LINK_SCHEME}/${resultId}`;
+            const storeUrl = getMobileOS() === "ios" ? APP_STORE_URL : PLAY_STORE_URL;
+
+            // Show manual button as fallback
+            const btn = document.getElementById('manual-btn');
+            btn.href = jumpUrl;
+            setTimeout(() => { btn.style.display = 'inline-block'; }, 2000);
+
+            // Trigger jump
+            window.location.href = jumpUrl;
+
+            // Fallback to store
+            setTimeout(() => {
+                window.location.href = storeUrl;
+            }, 3000);
+        } else {
+            document.querySelector('p').innerText = "Invalid shared link.";
+            document.querySelector('.spinner').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
