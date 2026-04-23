@@ -48,7 +48,13 @@
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const resultId = urlParams.get('id');
+        let resultId = urlParams.get('id');
+
+        // Fallback: extract from path if not in query string
+        if (!resultId) {
+            const pathParts = window.location.pathname.split('/');
+            resultId = pathParts[pathParts.length - 1];
+        }
 
         if (resultId) {
             const jumpUrl = `${DEEP_LINK_SCHEME}/${resultId}`;
