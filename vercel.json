@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/share/result/:id",
-      "destination": "/share/result/index.html?id=:id"
+      "destination": "/share/result/index.html"
     }
   ],
   "headers": [
