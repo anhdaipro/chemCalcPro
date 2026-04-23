@@ -52,7 +52,7 @@
 
         // Fallback: extract from path if not in query string
         if (!resultId) {
-            const pathParts = window.location.pathname.split('/');
+            const pathParts = window.location.pathname.split('/').filter(Boolean);
             resultId = pathParts[pathParts.length - 1];
         }
 
