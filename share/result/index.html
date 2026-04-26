@@ -37,6 +37,7 @@
 
     <script>
         const DEEP_LINK_SCHEME = 'chemcalcpro://share/result';
+        const PACKAGE_NAME = 'com.anhdaipro.chemcalcpro';
         const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.anhdaipro.chemcalcpro';
         const APP_STORE_URL = 'https://apps.apple.com/app/id6477202390';
 
@@ -57,21 +58,37 @@
         }
 
         if (resultId) {
-            const jumpUrl = `${DEEP_LINK_SCHEME}/${resultId}`;
-            const storeUrl = getMobileOS() === "ios" ? APP_STORE_URL : PLAY_STORE_URL;
-
-            // Show manual button as fallback
+            const os = getMobileOS();
             const btn = document.getElementById('manual-btn');
+            const jumpUrl = `${DEEP_LINK_SCHEME}/${resultId}`;
+            
+            // Set up manual button just in case
             btn.href = jumpUrl;
-            setTimeout(() => { btn.style.display = 'inline-block'; }, 2000);
+            setTimeout(() => { btn.style.display = 'inline-block'; }, 2500);
 
-            // Trigger jump
-            window.location.href = jumpUrl;
-
-            // Fallback to store
-            setTimeout(() => {
-                window.location.href = storeUrl;
-            }, 3000);
+            if (os === "android") {
+                // Use intent:// for Android - more robust in Facebook/Chrome
+                // S.browser_fallback_url is handled natively by the browser
+                const intentUrl = `intent://share/result/${resultId}#Intent;scheme=chemcalcpro;package=${PACKAGE_NAME};S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
+                window.location.href = intentUrl;
+            } else if (os === "ios") {
+                // iOS still needs a timeout fallback
+                window.location.href = jumpUrl;
+                
+                const start = Date.now();
+                setTimeout(() => {
+                    // Only redirect if page is still visible and not too much time has passed
+                    // (document.hidden check detects if the app successfully opened)
+                    if (!document.hidden && !document.webkitHidden && (Date.now() - start < 6000)) {
+                        window.location.href = APP_STORE_URL;
+                    }
+                }, 5000);
+            } else {
+                // For desktop or unknown, redirect to Play Store/Website after a delay
+                setTimeout(() => {
+                    window.location.href = PLAY_STORE_URL;
+                }, 1000);
+            }
         } else {
             document.querySelector('p').innerText = "Invalid shared link.";
             document.querySelector('.spinner').style.display = 'none';
